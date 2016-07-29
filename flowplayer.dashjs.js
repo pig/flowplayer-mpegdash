@@ -85,12 +85,6 @@
                 },
 
                 initQualitySelection = function(dashQualitiesConf, conf, dashApi) {
-                    console.log("[initQualitySelection()] dashQualitiesConf : " + dashQualitiesConf);
-                    console.log("[initQualitySelection()] conf : ");
-                    console.table(conf);
-                    console.log("[initQualitySelection()] dashApi");
-                    console.table(dashApi);
-
                     var bitrates = dashApi.getBitrateInfoListFor("video");
                     var dashQualities = [];
                     var qIndices = [];
@@ -100,9 +94,6 @@
                     qClean();
 
                     if (bitrates.length < 2) return;
-                    console.log("[initQualitySelection()] bitrates : ");
-                    console.log(bitrates);
-                    console.table(bitrates);
 
                     bitrates.forEach(function(bitrate) {
                         if (dashQualitiesConf === true || qIndices.indexOf(bitrateIndx) > -1) {
@@ -118,7 +109,6 @@
                     player.qualities = [];
                     dashQualities.forEach(function(dashQuality, idx) {
                         var bitrateObj = bitrates[idx];
-                        console.log("(loop) " + bitrateObj);
                         var level = bitrateObj.qualityIndex,
                             width = bitrateObj.width,
                             height = bitrateObj.height,
@@ -129,11 +119,7 @@
                         player.qualities.push(label);
                     });
                     console.log("dashQualities : " + dashQualities);
-                    // console.log("GETTING Bitrate list: ");
-                    // console.table(player.qualities);
 
-                    // console.log("flowplayer.common: ");
-                    // console.table(common);
                     console.log("SET selector root");
                     selector = common.createElement("ul", {
                         "class": "fp-quality-selector"
@@ -191,7 +177,7 @@
                                     console.log("changing the quality to [AUTO].");
                                     dashApi.setAutoSwitchQualityFor("video", true);
                                 } else {
-                                    console.log("changing the quality to level " + i - 1);
+                                    console.log("changing the quality to [Level " + i - 1 + "]");
                                     dashApi.setAutoSwitchQualityFor("video", false);
                                     dashApi.setQualityFor("video", i - 1);
                                 }
@@ -387,7 +373,6 @@
                                     switch (key) {
                                         case "STREAM_INITIALIZED":
                                             console.log("[DASH EVENT ON - STREAM_INITIALIZED]");
-                                            console.table(mediaPlayer.getBitrateInfoListFor("video"));
                                             if (dashQualitiesSupport(conf)) {
                                                 initQualitySelection(dashQualitiesConf, dashUpdatedConf, mediaPlayer);
                                             } else {
@@ -395,6 +380,7 @@
                                             }
                                             break;
                                         case "CAN_PLAY":
+                                            console.log("[DASH EVENT ON - CAN_PLAY]");
                                             // set active according to the player.quality.
                                             var selectorIndex = 0;
                                             var quality = player.quality;
@@ -403,11 +389,9 @@
                                                     0 :
                                                     player.qualities.indexOf(quality) + 1;
                                                 common.addClass(common.find(".fp-quality-selector li", root)[selectorIndex], qActive);
-                                                console.log("AFTER STREAM_INITIALIZED, set quality to " + player.quality + " as " + qActive);
                                             } else {
                                                 player.quality = "abr";
                                                 common.addClass(common.find(".fp-quality-selector li", root)[selectorIndex], qActive);
-                                                console.log("AFTER STREAM_INITIALIZED, set quality to " + player.quality + " as " + qActive);
                                             }
                                             break;
                                         case "ERROR":
