@@ -99,7 +99,7 @@
 
                     qClean();
 
-                    if(bitrates.length < 2) return ;
+                    if (bitrates.length < 2) return;
                     console.log("[initQualitySelection()] bitrates : ");
                     console.log(bitrates);
                     console.table(bitrates);
@@ -145,6 +145,7 @@
                     player.dashQualities = dashQualities;
                     if (!player.quality || player.qualities.indexOf(player.quality) < 0) {
                         player.quality = "abr";
+                        console.log("set to quality auto choose.");
                     }
 
                     console.log("SET Video qualities list");
@@ -158,6 +159,7 @@
                     });
                     common.addClass(root, "quality-" + dataQuality());
 
+                    console.log("Binding the events on each quality option.");
                     // Binding the click event
                     bean.on(root, "click." + engineName, ".fp-quality-selector li", function(e) {
                         var choice = e.currentTarget,
@@ -189,7 +191,7 @@
                                     console.log("changing the quality to [AUTO].");
                                     dashApi.setAutoSwitchQualityFor("video", true);
                                 } else {
-                                    console.log("changing the quality to level " + i-1);
+                                    console.log("changing the quality to level " + i - 1);
                                     dashApi.setAutoSwitchQualityFor("video", false);
                                     dashApi.setQualityFor("video", i - 1);
                                 }
@@ -392,6 +394,22 @@
                                                 delete player.quality;
                                             }
                                             break;
+                                        case "CAN_PLAY":
+                                            // set active according to the player.quality.
+                                            var selectorIndex = 0;
+                                            var quality = player.quality;
+                                            if (quality) {
+                                                selectorIndex = quality === "abr" ?
+                                                    0 :
+                                                    player.qualities.indexOf(quality) + 1;
+                                                common.addClass(common.find(".fp-quality-selector li", root)[selectorIndex], qActive);
+                                                console.log("AFTER STREAM_INITIALIZED, set quality to " + player.quality + " as " + qActive);
+                                            } else {
+                                                player.quality = "abr";
+                                                common.addClass(common.find(".fp-quality-selector li", root)[selectorIndex], qActive);
+                                                console.log("AFTER STREAM_INITIALIZED, set quality to " + player.quality + " as " + qActive);
+                                            }
+                                            break;
                                         case "ERROR":
                                             switch (data.error) {
                                                 case "download":
@@ -439,17 +457,9 @@
                                 });
                             });
 
-
-                            var quality = player.quality;
-                            if (quality) {
-                                selectorIndex = quality === "abr" ?
-                                    0 :
-                                    player.qualities.indexOf(quality) + 1;
-                                common.addClass(common.find(".fp-quality-selector li", root)[selectorIndex], qActive);
-                            }
-
                             common.prepend(common.find(".fp-player", root)[0], videoTag);
                             mediaPlayer.initialize(videoTag, video.src, autoplay);
+
 
                             // at least some Android requires extra load
                             // https://github.com/flowplayer/flowplayer/issues/910
@@ -550,6 +560,4 @@
 
     }
 
-}.apply(null, (typeof module === 'object' && module.exports) ?
-    [require('flowplayer'), require('dashjs')] :
-    [window.flowplayer, window.dashjs]));
+}.apply(null, (typeof module === 'object' && module.exports) ? [require('flowplayer'), require('dashjs')] : [window.flowplayer, window.dashjs]));
