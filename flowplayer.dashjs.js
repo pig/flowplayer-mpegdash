@@ -231,12 +231,12 @@
                                 DASHEVENTS = dashjs.MediaPlayer.events,
                                 autoplay = !!video.autoplay || !!conf.autoplay,
                                 posterClass = "is-poster",
-                                livestartpos = 0;
-                            dashQualitiesConf = video.dashQualities || conf.dashQualities,
+                                livestartpos = 0,
+                                dashQualitiesConf = video.dashQualities || conf.dashQualities;
 
                                 if (!mediaPlayer) {
-                                    common.removeNode(common.findDirect("video", root)[0] ||
-                                        common.find(".fp-player > video", root)[0]);
+                                    common.removeNode(common.findDirect("video", root)[0]
+                                            || common.find(".fp-player > video", root)[0]);
                                     // dash.js enforces preload="auto" and
                                     // autoplay depending on initialization
                                     // so setting the attributes here will have no effect
