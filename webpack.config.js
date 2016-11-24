@@ -4,14 +4,17 @@ var fs = require('fs')
   , path = require('path')
   , webpack = require('webpack')
   , console = require('console')
+  , WrapperPlugin = require('wrapper-webpack-plugin')
+  , headerComment = fs.readFileSync('./headConditionalComment.js')
+  , footerComment = fs.readFileSync('./footConditionalComment.js')
   , exec = require('child_process').execSync
-  , gitId
+  , gitDesc
   , banner = ''
   , bannerAppend = false
   , lines = fs.readFileSync('./flowplayer.dashjs.js', 'utf8').split('\n');
 
 try {
-    gitId = exec('git rev-parse --short HEAD').toString('utf8').trim();
+    gitDesc = exec('git describe').toString('utf8').trim();
 } catch (ignore) {
     console.warn('unable to determine git revision');
 }
@@ -21,16 +24,16 @@ lines.forEach(function (line) {
         bannerAppend = true;
     }
     if (bannerAppend) {
-        bannerAppend = line.indexOf('$GIT_ID$') < 0;
-        if (gitId) {
-            line = line.replace('$GIT_ID$', gitId);
+        bannerAppend = line.indexOf('$GIT_DESC$') < 0;
+        if (gitDesc) {
+            line = line.replace('$GIT_DESC$', gitDesc);
         }
         banner += line + (bannerAppend ? '\n' : '\n\n*/');
     }
 });
 
 module.exports = {
-  entry: {'flowplayer.dashjs.min': ['js-polyfills/es5.js', './flowplayer.dashjs.js']},
+  entry: {'flowplayer.dashjs.min': ['./standalone.js']},
   externals: {
     flowplayer: 'flowplayer'
   },
@@ -50,6 +53,8 @@ module.exports = {
       mangle: true,
       output: { comments: false }
     }),
+    new webpack.NormalModuleReplacementPlugin(/^webworkify$/, 'webworkify-webpack'),
+    new WrapperPlugin({header: headerComment, footer: footerComment}),
     new webpack.BannerPlugin(banner, {raw: true})
   ]
 };

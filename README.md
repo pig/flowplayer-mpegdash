@@ -26,7 +26,8 @@ The plugin can be used in a [browserify](http://browserify.org) and/or
 
 ```js
 var flowplayer = require('flowplayer');
-require('flowplayer-dashjs'); // Plugin injects itself to flowplayer
+var engine = require('flowplayer-dashjs');
+engine(flowplayer-dashjs); // plugin injects itself into flowplayer
 
 flowplayer('#container', {
   clip: {
@@ -47,11 +48,9 @@ Features
 --------
 
 - packs a compatibility tested version - current:
-  [v2.1.1](https://github.com/Dash-Industry-Forum/dash.js/releases/tag/v2.1.1) - of
+  [v2.3.0](https://github.com/Dash-Industry-Forum/dash.js/releases/tag/v2.3.0) - of
   [dash.js](https://github.com/Dash-Industry-Forum/dash.js) by the
   [Dash Industry Forum](http://dashif.org/software/)
-- packs [es5.js](https://github.com/inexorabletash/polyfill/blob/master/es5.js) for
-  IE8 compatibility
 - engine is only loaded if the client supports DASH in a MediaSource element, see also the `codecs`
   [option](https://flowplayer.org/docs/plugins.html#dashjs-configuration)
 - also available for Flowplayer version 5.x ([demo](http://demos.flowplayer.org/v5/api/dash.html)) -
@@ -63,7 +62,7 @@ Stream compatibility
 
 DASH is not a fixed standard yet, but a moving target. As the plugin is based on dash.js stream
 compatibility can be cross-checked in the latest
-[dash.js sample player](http://dashif.org/reference/players/javascript/v2.1.1/samples/dash-if-reference-player/).
+[dash.js sample player](http://dashif.org/reference/players/javascript/v2.3.0/samples/dash-if-reference-player/).
 
 *Caveat:* WebM-DASH streams are extremely unlikely to work correctly with dash.js - or any other
 available client library we know about. - Hence historically the name of the plugin Git repository.
@@ -94,11 +93,8 @@ load the components separately using the latest development build or release fro
 ```html
 <script src="//releases.flowplayer.org/6.0.5/flowplayer.min.js"></script>
 
-<!-- unminified es5.js -->
-<script src="//releases.flowplayer.org/dashjs/es5.js"></script>
-
 <!-- load dash.js latest release -->
-<!-- <script src="//cdn.dashjs.org/v2.1.1/dash.all.min.js"></script> -->
+<!-- <script src="//cdn.dashjs.org/v2.3.0/dash.all.min.js"></script> -->
 
 <!-- or load dash.js latest dev build -->
 <script src="//cdn.dashjs.org/latest/dash.all.min.js"></script>
@@ -122,7 +118,7 @@ exclusion with a simple page using bare dash.js, like:
 <html>
 <head>
 
-<script src="//cdn.dashjs.org/v2.1.1/dash.all.min.js"></script>
+<script src="//cdn.dashjs.org/v2.3.0/dash.all.min.js"></script>
 
 <script>
 window.onload = function () {
